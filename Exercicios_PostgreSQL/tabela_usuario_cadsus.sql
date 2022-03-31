@@ -119,6 +119,166 @@ order by nm_usuario asc
 
 limit 20
 ;
+-- 1.10. BUSQUE O REGISTRO COMPLETO DE 20 PESSOAS DO SEXO FEMININO QUE NASCERAM APÓS 2000 E NÃO NASCERAM EM FLORIANOPOLIS (420540). CLASSIFIQUE DA MAIS NOVA PARA MAIS VELHA.
+
+select *
+	 
+	
+from 
+	usuario_cadsus
+	
+where
+    sg_sexo = 'F' 
+    and cod_cid_nascimento != 420540
+    and dt_nascimento >= '2000-01-01'::date
+order by nm_usuario desc
+    
+
+limit 20
+;
+
+-- 1.11. BUSQUE O NOME E A DATA DE NASCIMENTO DE 30 PESSOAS DO SEXA MASCULINO QUE NASCERAM ANTES DE 1930 OU ENTRE 1990 E 2000.
+
+select *
+	 
+	
+from 
+	usuario_cadsus
+	
+where
+    sg_sexo = 'M' 
+    and cod_cid_nascimento != 420540
+    and (dt_nascimento < '1930-01-01'::date
+    	or dt_nascimento between '1990-01-01'::date and '2000-01-01'::date)
+-- prestar atenção no uso de () no exemplo acima or fica condicionado de ntro do ()
+    
+
+limit 30
+;
+
+--1.12. BUSQUE O NOME DE 50 PESSOAS QUE FORAM CADASTRADAS ANTES 2020 E SEM CPF
+
+select 
+	nm_usuario,
+	dt_cadastro::date as data_cd,
+	cpf
+	
+	 
+	
+from 
+	usuario_cadsus
+	
+where
+   	dt_cadastro < '2019-12-31'::date and
+    cpf is null
+    
+
+    
+
+limit 50
+;
+
+
+--1.13. GERE UMA LISTA COM OS DIFERENTES CODIGOS DOS PAISES NASCIMENTO
+
+select 
+	distinct cd_pais_nascimento	
+	
+	 
+	
+from 
+	usuario_cadsus
+	
+
+   	
+    
+
+    
+
+limit 50
+;
+
+--1.14. busque os pacientes cadastrados pelos profissionais com código 7455,381,9484,216
+
+select 
+	nm_usuario,	
+	cd_usuario_cad
+	 
+	
+from 
+	usuario_cadsus
+	
+where
+	cd_usuario_cad in (7455,9484,381,216)
+	order by cd_usuario_cad asc
+   	
+    
+
+    
+
+limit 200
+
+;
+
+--1.15./ 1.16. Encontre o nome e data de nascimento do paciente mais velho/novo cadastro.
+
+select 
+	nm_usuario,	
+	dt_nascimento
+	 
+	
+from 
+	usuario_cadsus
+	
+	
+order by 
+	--dt_nascimento asc mais velho
+	dt_nascimento desc -- mais novo
+   	
+    
+
+    
+
+limit 200
+
+;
+
+--1.17. Conte quantas pessoas cadastradas após 2020 não possuem CPF
+
+select 
+	count(*) as pessoas_sem_cpf
+ 	
+	
+from 
+	usuario_cadsus
+	
+where
+	dt_cadastro < '2019-12-31'::date
+	and (cpf is null
+	or cpf = '') 
+
+
+;
+
+--1.18.Conte quantas pessoas cadastradas após 2020 não possuem CPF e sem RG
+
+select 
+	count(*) as pessoas_sem_cpf
+ 	
+	
+from 
+	usuario_cadsus
+	
+where
+	dt_cadastro < '2019-12-31'::date
+	and (cpf is null
+	or cpf = '') and (rg is null or rg = '')
+
+
+;
+
+--1.19. liste o nome e data de nascimento das pessoas sem CPF cadastradas noa ultimos 6 meses
+
 
 ;
 
