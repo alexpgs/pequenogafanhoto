@@ -279,6 +279,38 @@ where
 
 --1.19. liste o nome e data de nascimento das pessoas sem CPF cadastradas noa ultimos 6 meses
 
+select 
+	nm_usuario,
+	dt_nascimento,
+	dt_cadastro::date
+ 	
+	
+from 
+	usuario_cadsus
+	
+where
+	(cpf is null or cpf = '')
+	and dt_cadastro >= (current_date - '6 months'::interval)
+	--and dt_cadastro between (current_date - '6 months'::interval) and current_date
+	
+order by dt_cadastro desc
+limit 50
+;
 
+--1.20. liste o nome de 50 pessoas com o número de celular. caso não tenha celular registrado, o resultado deverá exibir " sem "celular.
+
+select 
+	nm_usuario,
+	case
+		when celular is not null then celular
+		when celular is null then 'sem celular'
+	end as num_celular
+from 
+	usuario_cadsus
+limit 50
+;
+
+
+-- case when then end (caso, quando, então, fim)
 ;
 
