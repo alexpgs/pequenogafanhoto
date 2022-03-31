@@ -314,3 +314,34 @@ limit 50
 -- case when then end (caso, quando, então, fim)
 ;
 
+--1.21. Busque nome de 50 pessoas atendidas no dia atual
+
+select
+	uc.nm_usuario,
+	atd.cd_cbo
+from
+	usuario_cadsus uc
+	join atendimento atd on uc.cd_usu_cadsus = atd.cd_usu_cadsus
+where
+	atd.dt_atendimento::date = current_date
+limit 50;
+
+--1.22. busque o nome de usuario atendido pelo profissional 262582, após 01/01/2022 ou no mês de agosto de 2021.
+
+select
+	uc.nm_usuario,
+	atd.dt_atendimento::date
+	
+from
+	usuario_cadsus uc
+	join atendimento atd on uc.cd_usu_cadsus = atd.cd_usu_cadsus
+	
+where
+	atd.cd_profissional in (262582) and (atd.dt_atendimento > '2022-01-01'::date
+    	or atd.dt_atendimento between '2021-08-01'::date and '2021-08-31'::date)
+
+--1.23. busque o codigo de prontuario das crianças de 0 a 10 anos atendidas pelo profissional 262582 nos ultimos 20 dias.
+
+
+
+
