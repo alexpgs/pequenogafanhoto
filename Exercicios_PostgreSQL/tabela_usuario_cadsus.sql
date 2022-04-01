@@ -342,6 +342,47 @@ where
 
 --1.23. busque o codigo de prontuario das crianças de 0 a 10 anos atendidas pelo profissional 262582 nos ultimos 20 dias.
 
+select
+	uc.cd_usu_cadsus,
+	uc.dt_nascimento,
+	extract(year from age(dt_nascimento)) as idade,
+	atd.cd_profissional,
+	atd.dt_atendimento::date
+from
+	usuario_cadsus uc
+	join atendimento atd on uc.cd_usu_cadsus = atd.cd_usu_cadsus
+	
+where
+	--atd.cd_profissional = 262582 
+	atd.dt_atendimento >= (current_date - '20 days'::interval)
+	and age(uc.dt_nascimento) <= '10 year' 
+	-- ou prederia ser assim extract(year from age(dt_nascimento)) <= 10
+order by atd.dt_atendimento asc
+	
+limit 200
+;
 
+-- ou assim
+
+select
+	uc.cd_usu_cadsus,
+	--uc.dt_nascimento,
+	extract(year from age(uc.dt_nascimento)) as idade
+	--atd.cd_profissional,
+	--atd.dt_atendimento::date
+from
+	usuario_cadsus uc
+	join atendimento atd on uc.cd_usu_cadsus = atd.cd_usu_cadsus
+	
+where
+	--atd.cd_profissional = 262582 
+	atd.dt_atendimento >= (current_date - '20 days'::interval)
+	and age(uc.dt_nascimento) <= '10 year' 
+
+order by uc.dt_nascimento desc
+
+	
+limit 200
+;
 
 
