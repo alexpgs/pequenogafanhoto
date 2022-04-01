@@ -385,4 +385,24 @@ order by uc.dt_nascimento desc
 limit 200
 ;
 
+--1.24 Liste o nome de pessoas atendidas nos ultimos 7 dias com cid B972.
+
+select
+	uc.nm_usuario,
+	atd.dt_atendimento::date,
+	cd_cid_principal
+from
+	usuario_cadsus uc
+	join atendimento atd on uc.cd_usu_cadsus = atd.cd_usu_cadsus
+	
+where
+	atd.dt_atendimento >= (current_date - '7 days'::interval)
+	and cd_cid_principal ='B972'
+
+order by 
+	atd.dt_atendimento::date asc, -- dt_atendimento é timestamp logo as horas contariam para ordenação usando o date isso é corrigido
+	uc.nm_usuario asc
+	
+limit 200
+;
 
