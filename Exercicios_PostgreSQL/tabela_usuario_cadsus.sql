@@ -406,3 +406,62 @@ order by
 limit 200
 ;
 
+--1.25. liste o numero de códigos dos atendimentos realizados hoje na unidade 257617, com CPF do usario se houver.
+
+select
+	uc.nm_usuario,
+	uc.celular,
+	uc.nr_telefone,
+	--(atd.dt_chegada - atd.dt_atendimento) as minutos,
+	extract(epoch from (atd.dt_chegada - atd.dt_atendimento) / 60) as minutos,
+	atd.dt_atendimento
+from
+	usuario_cadsus uc	
+	join atendimento atd on uc.cd_usu_cadsus = atd.cd_usu_cadsus
+
+where
+	atd.dt_atendimento::date = current_date 
+	and (atd.dt_chegada - atd.dt_atendimento)::interval > '1 hour'::interval
+
+order by minutos asc
+limit 200;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+select
+	atd.nr_atendimento,
+	uc.cpf,
+	atd.empresa
+from
+	usuario_cadsus uc
+	join atendimento atd on uc.cd_usu_cadsus = atd.cd_usu_cadsus
+	
+where
+	atd.dt_atendimento::date = current_date 
+	and (uc.cpf is not null or uc.cpf <> '')	
+	and atd.empresa = 257617
+	
+order by 
+	
+	atd.dt_atendimento desc
+	
+limit 200
+;
+
+--1.26. 
