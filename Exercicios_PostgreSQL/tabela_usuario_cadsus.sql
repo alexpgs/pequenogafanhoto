@@ -426,25 +426,10 @@ where
 order by minutos asc
 limit 200;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+--1.26. liste o numero do codigo de atendimentos realizados hpje na unidade 257617, com CPF do usuario se houver 
 
 select
+
 	atd.nr_atendimento,
 	uc.cpf,
 	atd.empresa
@@ -464,4 +449,45 @@ order by
 limit 200
 ;
 
---1.26. 
+--1.27. 
+
+-- não resolvido
+select
+	uc.nm_usuario,
+	count(atd.nr_atendimento) as soma,
+	sum(count(atd.nr_atendimento))  as total
+	
+from
+	usuario_cadsus uc
+	join atendimento atd on uc.cd_usu_cadsus = atd.cd_usu_cadsus
+	
+where 
+	(uc.nm_usuario like 'MARIA DA SILVA %' or uc.nm_usuario like '% MARIA DA SILVA %') 
+	
+group by 
+	uc.nm_usuario,
+	atd.nr_atendimento
+	
+
+limit 10
+-- não resolvido
+
+--1.28. busuqe o codigo de atendimento dos atendimentos realizados no dia atual no cs Prainha.
+
+select
+	atd.nr_atendimento,
+	count(atd.nr_atendimento) as tot_al,
+	atd.dt_atendimento::date,
+	cs.descricao
+from
+	usuario_cadsus uc
+	 join empresa cs on cs.empresa = empresa_responsavel
+	 join atendimento atd on uc.cd_usu_cadsus = atd.cd_usu_cadsus
+where
+	atd.dt_atendimento::date = current_date and
+	cs.descricao = 'CS PRAINHA'
+group by
+	atd.nr_atendimento,
+	cs.descricao,
+	atd.dt_atendimento
+;
