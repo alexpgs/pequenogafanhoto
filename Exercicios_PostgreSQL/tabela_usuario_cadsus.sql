@@ -648,4 +648,45 @@ limit 50
 		
 -- 1.43. Busque o seu nome e altere para a primeira letra maiuscula e demais miniuculas, com o initcap. depois altere para todas maiusculas e todas minusculas, com upper  e lower
 
+/*select
+	initcap(nm_usuario) as usuario
+from
+	usuario_cadsus
+where
+	nm_usuario ='ALEX PEDRO GONCALVES SEBASTIAO'
+
+;*/
+
+/*select
+	lower(nm_usuario) as usuario
+from
+	usuario_cadsus
+where
+	nm_usuario ='ALEX PEDRO GONCALVES SEBASTIAO'
+;*/
+
+select
+	upper(nm_usuario) as usuario
+from
+	usuario_cadsus
+where
+	nm_usuario ='ALEX PEDRO GONCALVES SEBASTIAO'
+;
+
+-- 1.44. Busque 10 pacientes do sexo masculino e classifique de forma descendente pelo tamanho do nome
+
+select
+	length (nm_usuario) as nome,
+	nm_usuario,
+	sg_sexo
+from
+	usuario_cadsus
+where
+	sg_sexo = 'M' 
+order by nome desc
+
+limit 10
+;
+
+--1.45. calcule a média de atendimentos de um profissional nos ultimos 3 dias. teste as funções CEIL, FLOOR e ROUND para arrendodar o resultado.
 
