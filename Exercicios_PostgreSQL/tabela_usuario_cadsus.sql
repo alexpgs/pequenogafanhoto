@@ -472,7 +472,7 @@ group by
 limit 10
 -- não resolvido
 
---1.28. busuqe o codigo de atendimento dos atendimentos realizados no dia atual no cs Prainha.
+--1.31. busuqe o codigo de atendimento dos atendimentos realizados no dia atual no cs Prainha.
 
 select
 	atd.nr_atendimento,
@@ -491,3 +491,161 @@ group by
 	cs.descricao,
 	atd.dt_atendimento
 ;
+
+--1.32. busque o nome e data de nascimento dos pacientes atendidos no dia anterior no cs sacodoslimoes.
+
+select
+	uc.nm_usuario,
+	uc.dt_nascimento,
+	cs.descricao,
+	atd.dt_atendimento
+	
+from usuario_cadsus uc
+	join empresa cs on cs.empresa = empresa_responsavel
+	join atendimento atd on uc.cd_usu_cadsus = atd.cd_usu_cadsus
+	
+where
+	atd.dt_atendimento::date = current_date - interval '1 day'
+	and cs.descricao = 'CS SACO DOS LIMOES'
+order by uc.dt_nascimento asc
+limit 50
+
+;
+
+--1.33. Busque a lista de pacientes atendidos em janeiro na CS COSTA DA LAGOA, indicando se o paciente possui ou não CPF ( utilize 1 para sim e 0 para não).
+
+select
+	uc.nm_usuario,
+	uc.dt_nascimento,
+	cs.descricao,
+	atd.dt_atendimento,
+	case
+		when atd.cpf notnull then 0
+		else 1
+		end situacao_cpf
+
+from usuario_cadsus uc
+	join empresa cs on cs.empresa = empresa_responsavel
+	join atendimento atd on uc.cd_usu_cadsus = atd.cd_usu_cadsus
+	
+where
+	atd.dt_atendimento between '2022-01-01'::date and '2022-01-31'::date
+	and cs.descricao = 'CS COSTA DA LAGOA'
+	
+order by uc.nm_usuario asc
+;
+
+--1.34.	busque o numero de atendimentos realizados po CS NO DIA 03/01/2022
+
+select
+	uc.nm_usuario,
+	uc.dt_nascimento,
+	cs.descricao,
+	atd.dt_atendimento,
+	case
+		when atd.cpf notnull then 0
+		else 1
+		end situacao_cpf
+
+from usuario_cadsus uc
+	join empresa cs on cs.empresa = empresa_responsavel
+	join atendimento atd on uc.cd_usu_cadsus = atd.cd_usu_cadsus
+	
+where
+	atd.dt_atendimento::DATE = '2022-01-03'
+	and cs.descricao like 'CS %'
+	
+order by uc.nm_usuario asc
+;
+
+--1.35. busque a lista de pacientes atendidos realizados por profissional médico no dia atual no Cs CENTRO
+
+select
+	uc.nm_usuario,
+	uc.dt_nascimento,
+	cs.descricao,
+	atd.dt_atendimento::date,
+	tc.ds_cbo,
+	case
+		when atd.cpf notnull then 0
+		else 1
+		end situacao_cpf
+
+from usuario_cadsus uc
+	join empresa cs on cs.empresa = empresa_responsavel
+	join atendimento atd on uc.cd_usu_cadsus = atd.cd_usu_cadsus
+	join tabela_cbo tc on tc.cd_cbo = atd.cd_cbo
+	
+where
+	atd.dt_atendimento::DATE = current_date
+	and cs.descricao = 'CS CENTRO'
+	and atd.cd_cbo like '225%'
+	
+order by uc.nm_usuario asc
+;
+
+-- ou
+
+select
+	uc.nm_usuario,
+	uc.dt_nascimento,
+	cs.descricao,
+	atd.dt_atendimento::date,
+	tc.ds_cbo,
+	case
+		when atd.cpf = '' then 0
+		else 1
+		end situacao_cpf
+
+from usuario_cadsus uc
+	join empresa cs on cs.empresa = empresa_responsavel
+	join atendimento atd on uc.cd_usu_cadsus = atd.cd_usu_cadsus
+	join tabela_cbo tc on tc.cd_cbo = atd.cd_cbo
+	
+where
+	atd.dt_atendimento::DATE = current_date
+	and cs.descricao = 'CS CENTRO'
+	and atd.cd_cbo like '225%'
+	
+order by atd.cpf desc
+;
+
+--1.41. Use a função concat  para concatenar nome e data de nascimento de um usuario
+
+select
+	concat(
+		uc.nm_usuario,'//',
+		uc.dt_nascimento)
+
+
+from usuario_cadsus uc
+	
+	
+order by uc.nm_usuario asc
+
+limit 50
+;
+
+
+--1.42 Use a função concat_ws  para concatenar nome,data de nascimento e CPF de um usuario, separados por vircula
+
+select
+	concat_ws(',',
+	nm_usuario,
+	dt_nascimento, cpf)
+	
+
+from usuario_cadsus
+	
+where
+	cpf is not null
+
+	
+order by nm_usuario asc
+
+limit 50
+;
+		
+-- 1.43. Busque o seu nome e altere para a primeira letra maiuscula e demais miniuculas, com o initcap. depois altere para todas maiusculas e todas minusculas, com upper  e lower
+
+
