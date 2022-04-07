@@ -451,11 +451,11 @@ limit 200
 
 --1.27. 
 
--- não resolvido
 select
 	uc.nm_usuario,
-	count(atd.nr_atendimento) as soma,
-	sum(count(atd.nr_atendimento))  as total
+	count(nm_usuario)
+	
+	
 	
 from
 	usuario_cadsus uc
@@ -465,12 +465,11 @@ where
 	(uc.nm_usuario like 'MARIA DA SILVA %' or uc.nm_usuario like '% MARIA DA SILVA %') 
 	
 group by 
-	uc.nm_usuario,
-	atd.nr_atendimento
+	uc.nm_usuario
+	
 	
 
 limit 10
--- não resolvido
 
 --1.31. busuqe o codigo de atendimento dos atendimentos realizados no dia atual no cs Prainha.
 
@@ -516,9 +515,9 @@ limit 50
 
 select
 	uc.nm_usuario,
-	uc.dt_nascimento,
+	--uc.dt_nascimento,
 	cs.descricao,
-	atd.dt_atendimento,
+	--atd.dt_atendimento,
 	case
 		when atd.cpf notnull then 0
 		else 1
@@ -538,14 +537,8 @@ order by uc.nm_usuario asc
 --1.34.	busque o numero de atendimentos realizados po CS NO DIA 03/01/2022
 
 select
-	uc.nm_usuario,
-	uc.dt_nascimento,
 	cs.descricao,
-	atd.dt_atendimento,
-	case
-		when atd.cpf notnull then 0
-		else 1
-		end situacao_cpf
+	count(cs.descricao)as soma
 
 from usuario_cadsus uc
 	join empresa cs on cs.empresa = empresa_responsavel
@@ -554,8 +547,9 @@ from usuario_cadsus uc
 where
 	atd.dt_atendimento::DATE = '2022-01-03'
 	and cs.descricao like 'CS %'
-	
-order by uc.nm_usuario asc
+group by 
+	cs.descricao
+order by soma asc
 ;
 
 --1.35. busque a lista de pacientes atendidos realizados por profissional médico no dia atual no Cs CENTRO
