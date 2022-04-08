@@ -471,7 +471,7 @@ group by
 
 limit 10
 
---1.31. busuqe o codigo de atendimento dos atendimentos realizados no dia atual no cs Prainha.
+--1.31. busque o codigo de atendimento dos atendimentos realizados no dia atual no cs Prainha.
 
 select
 	atd.nr_atendimento,
@@ -547,6 +547,7 @@ from usuario_cadsus uc
 where
 	atd.dt_atendimento::DATE = '2022-01-03'
 	and cs.descricao like 'CS %'
+	
 group by 
 	cs.descricao
 order by soma asc
@@ -683,4 +684,47 @@ limit 10
 ;
 
 --1.45. calcule a média de atendimentos de um profissional nos ultimos 3 dias. teste as funções CEIL, FLOOR e ROUND para arrendodar o resultado.
+
+select
+	count(pf.nm_profissional)/3 as media_nos_ultimos_3_dias,
+	pf.nm_profissional
+	
+from
+	atendimento atd
+	join profissional pf on atd.cd_profissional = pf.cd_profissional
+where
+	atd.dt_atendimento::date >= (current_date - '3 days'::interval)
+	and pf.nm_profissional like 'zelma gulart de lima'
+group by
+	pf.nm_profissional
+	 
+order by pf.nm_profissional desc
+;
+
+--1.46. Selecione um timestamp e utilize o date_trunc para obter o inicio do mês
+
+select
+	nm_usuario,
+	date_trunc('month',dt_inclusao)
+from
+	usuario_cadsus
+;
+--1.47. utilize a função age para saber sua idade e transforme em anos, meses , dias e minutos utilizando a função extract
+
+select
+	nm_usuario,
+--	extract( day from dt_nascimento)
+--	extract( month from dt_nascimento)
+--	extract( year from dt_nascimento)
+--	extract( hour from dt_nascimento)
+--	extract( decade from dt_nascimento)
+--	extract( dow from dt_nascimento)
+extract (year from age(dt_nascimento))
+from
+	usuario_cadsus
+where
+	nm_usuario like 'ALEX PEDRO GONCALVES SEBASTIAO'
+;
+
+--1.48. Busque o ultimo horário de atendimento em cada CS no dia de ontem e verefique qual teve o ultimo atendimento (mais tarde).repita a busca usando o primeiro horario de atendimento
 
