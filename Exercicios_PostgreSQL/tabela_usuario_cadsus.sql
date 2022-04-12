@@ -699,7 +699,7 @@ group by
 	pf.nm_profissional
 	 
 order by pf.nm_profissional desc
-;
+;-- corrigir com o denis não consegui usar o AGE
 
 --1.46. Selecione um timestamp e utilize o date_trunc para obter o inicio do mês
 
@@ -728,3 +728,22 @@ where
 
 --1.48. Busque o ultimo horário de atendimento em cada CS no dia de ontem e verefique qual teve o ultimo atendimento (mais tarde).repita a busca usando o primeiro horario de atendimento
 
+select
+distinct (ep.descricao),	
+max(atd.dt_atendimento::time) as ultimo
+--min(atd.dt_atendimento::time) as primeiro	
+from
+	atendimento atd
+	join empresa ep on atd.empresa = ep.empresa		
+where
+	ep.descricao like 'CS %' 
+	and atd.dt_atendimento::date = current_date - interval '1 day'
+group by	
+	ep.descricao
+order by ultimo asc
+--order by primeiro asc
+;
+
+	
+
+	
