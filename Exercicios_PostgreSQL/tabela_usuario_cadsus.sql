@@ -729,7 +729,7 @@ where
 --1.48. Busque o ultimo horário de atendimento em cada CS no dia de ontem e verefique qual teve o ultimo atendimento (mais tarde).repita a busca usando o primeiro horario de atendimento
 
 select
-distinct (ep.descricao),	
+ep.descricao,	
 max(atd.dt_atendimento::time) as ultimo
 --min(atd.dt_atendimento::time) as primeiro	
 from
