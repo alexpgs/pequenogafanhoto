@@ -1,18 +1,18 @@
 select
-	atd.nr_atendimento *2/100,
-	extract(year from age(atd.dt_atendimento,uc.dt_nascimento)) as idade,
-	uc.sg_sexo,
-	dt.nm_dente as dente,
-	std.ds_situacao as motivo,
-	aoe.ds_trabalho as prontuario_reg,
+	(case  when ep.descricao = 'UNIDADE DE PRONTO ATENDIMENTO - UPA SUL DA ILHA' then 'UPA SUL' else 'UPA NORTE' end) as unidade,
 	atd.dt_atendimento::date as data_atendimento,
 	atd.dt_atendimento ::time as hora_atendimento,
-	ea.ds_area as area,
-	(case  when ep.descricao = 'UNIDADE DE PRONTO ATENDIMENTO - UPA SUL DA ILHA' then 'UPA SUL' else 'UPA NORTE' end) as upa
-	
-	
-	
-
+	(atd.nr_atendimento *2 -357) as cod_atendimento,
+	(uc.cd_usu_cadsus *2 -357) as cod_usuario,
+	extract(year from age(atd.dt_atendimento,uc.dt_nascimento)) as idade,
+	uc.sg_sexo as sexo,
+	dt.nm_dente as dente,
+	std.ds_situacao as motivo,
+	--aoe.ds_trabalho as evolucao,
+	ea.ds_area as equipe,
+	euc.nm_bairro as bairro,
+	c.descricao as cidade
+		
 from 
 	atendimento atd
 	join empresa ep on ep.empresa = atd.empresa
@@ -25,14 +25,12 @@ from
 	left join endereco_estruturado ee on ee.cd_endereco_estruturado = euc.cd_endereco_estruturado
 	left join equipe_micro_area ema on ema.cd_eqp_micro_area = ee.cd_eqp_micro_area
 	left join equipe_area ea on ea.cd_equipe_area = ema.cd_equipe_area
-	
-	
-
+	join cidade c on uc.cd_municipio_residencia = c.cod_cid 
 where
-	atd.dt_atendimento between '2020-12-01'::date and '2020-12-31'::date
+	atd.dt_atendimento between '2019-01-01'::date and '2022-05-12'::date
 	and extract(year from age(atd.dt_atendimento,uc.dt_nascimento)) <= 6
 	and ep.descricao like '%UNIDADE DE PRONTO ATENDIMENTO%'
 	and atd.cd_cbo like '2232%'
-	
+
 ;
 	
