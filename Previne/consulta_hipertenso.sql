@@ -60,6 +60,10 @@ WITH
 			--concat_ws(' | ', uc.celular, uc.nr_telefone, uc.nr_telefone_2) as telefones,
 			--uc.cd_endereco,
 			--uc.cd_equipe,
+			
+			icp.cd_procedimento,
+			pro.ds_procedimento,
+			
 			a1.dt_atendimento::date,
 			a1.cd_cid_principal,
 			a1.cd_cid_secundario,
@@ -67,7 +71,7 @@ WITH
 			prob.cd_cid,
 			ciap.referencia,
 			
-			last_value(em_atd.descricao) over (
+			/*last_value(em_atd.descricao) over (
 				partition by uc.cd_usu_cadsus
 				order by a1.dt_atendimento
 				rows between unbounded preceding and unbounded following
@@ -76,7 +80,8 @@ WITH
 				partition by uc.cd_usu_cadsus
 				order by a1.dt_atendimento 
 				rows between unbounded preceding and unbounded following
-			) as ultima_equipe,
+			) as ultima_equipe,*/
+			em_atd.descricao,
 			case
 				when
 					(a1.cd_cid_principal between 'I10' and 'I159'
@@ -87,21 +92,22 @@ WITH
 				else 0
 			end as conta_previne
 		from
-			usuario_cadsus uc
-			left join atendimento a1 on uc.cd_usu_cadsus = a1.cd_usu_cadsus
+			item_conta_paciente icp
+			left join atendimento a1 on icp.nr_atendimento = a1.nr_atendimento
+			left join usuario_cadsus uc on uc.cd_usu_cadsus = a1.cd_usu_cadsus
 			left join grupo_problemas_condicoes prob on uc.cd_usu_cadsus = prob.cd_usu_cadsus
 			left join ciap ciap on prob.cd_ciap = ciap.cd_ciap
 			left join ciap ciap2 on a1.cd_ciap = ciap2.cd_ciap
-            left join empresa em_atd on a1.empresa = em_atd.empresa
-                and em_atd.cod_atv in (1,2)
-                and em_atd.cnpj = '82892282000143'
+            left join empresa em_atd on icp.empresa_faturamento = em_atd.empresa
+
             left join equipe_profissional e_atd on e_atd.cd_profissional = a1.cd_profissional
                 and e_atd.dt_entrada <= a1.dt_atendimento
                 and (e_atd.dt_desligamento is null or e_atd.dt_desligamento >= a1.dt_atendimento)
             left join equipe eqp_atd on eqp_atd.cd_equipe = e_atd.cd_equipe 
-                and eqp_atd.empresa = a1.empresa
+                and eqp_atd.empresa = icp.empresa_faturamento
                 and eqp_atd.cd_tp_equipe in ('70','76')
             left join equipe_area eqap_atd on eqap_atd.cd_equipe_area = eqp_atd.cd_equipe_area
+            left join procedimento pro on icp.cd_procedimento = pro.cd_procedimento
 		where
 			(a1.cd_cid_principal between 'I10' and 'I159'
 				or a1.cd_cid_principal in ('I270','I272','O10','O100','O101','O102','O103','O104','O109')
